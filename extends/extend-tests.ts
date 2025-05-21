@@ -1,9 +1,10 @@
-import { test as base, expect } from "@playwright/test";
+import { test as base } from "@playwright/test";
 import type { Lang } from "../types/aviancatype";
 import { chromium } from "playwright-extra"
 import type { Page } from "playwright";
+import { GetContext } from "../global/index";
 
-export const test = base.extend({
+export const test2 = base.extend({
     page: async ({ page }, use, testInfo) => {
         //#region métodos generales
         let step = 0;
@@ -41,22 +42,7 @@ export const test = base.extend({
         }
 
         page.getPageTestConfiguration = async (): Promise<Page> => {
-            const browser = await chromium.launch({
-                headless: true,
-                args: ['--disable-blink-features=AutomationControlled',
-                    '--enable-webgl',
-                    '--use-gl=swiftshader',
-                    '--enable-accelerated-2d-canvas'
-                ]
-            });
-
-            const context = await browser.newContext({
-                userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-                viewport: { width: 1280, height: 720 },
-                locale: 'en-US',
-                timezoneId: 'America/New_York',
-                deviceScaleFactor: 1,
-            });
+            const context = await GetContext();
             const page = await context.newPage();
             await page.addInitScript(() => {
                 Object.defineProperty(navigator, 'webdriver', {
@@ -73,8 +59,13 @@ export const test = base.extend({
             return page;
         }
 
-        //#endregion
+        page.getRandomDelay = (): number => {
+            return Math.random() * (200 - 50) + 50;
+        }
 
+        //#endregion
         await use(page);
     }
-})
+});
+
+export { expect } from "@playwright/test";

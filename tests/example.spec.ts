@@ -1,8 +1,9 @@
-import { test, expect } from '@playwright/test';
+import { expect } from '@playwright/test';
 import { copys } from "../data/aviancadata";
+import { test } from "../extends/extends-example";
+import { GetContext } from '../global';
 
 test.describe('Comenzo prueba avianca', () => {
-
     test('prueba home avianca', async ({}, testInfo) => {
         test.setTimeout(300_000);
         let step = 0;
@@ -17,6 +18,9 @@ test.describe('Comenzo prueba avianca', () => {
             const ss = pad(now.getSeconds());
             return `fecha-${dd}-${mm}-${yyyy}_hora-${hh}-${mi}-${ss}`;
         };
+        
+        const context = await GetContext();
+        const page = await context.newPage();
 
         const takeScreenshot = async (label: string) => {
             step++;
@@ -30,15 +34,6 @@ test.describe('Comenzo prueba avianca', () => {
         };
 
         const idioma = copys.getLang();
-
-        //***************CODIGO PARA PROBAR EN GITHUB PARA SER INDETECTABLE*********************** */
-        const page = page.getPageTestConfiguration();
-
-        //********************************************************************************* */
-
-        
-
-        // Function to generate random delays between 50ms and 200ms
         const getRandomDelay = () => Math.random() * (200 - 50) + 50;
 
         const consentBtn = page.locator('#onetrust-pc-btn-handler', { delay: getRandomDelay() });

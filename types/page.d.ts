@@ -7,7 +7,7 @@ declare module '@playwright/test' {
         takeScreenshot(label: string): Promise<void>;
         getLangPage(): Promise<Lang>;
         getPageTestConfiguration(): Promise<Page>;
+        getRandomDelay(): number;
         //#endregion
-
     }
 }
