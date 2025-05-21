@@ -35,7 +35,7 @@ const copys: copysType = {
         vuelta: 'Retour',
         pagar: ' Continuer',
     },
-    getLang: () => copys.idioma
+    getLang: () => copys.idioma as Lang
 };
 
 export { copys };

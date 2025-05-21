@@ -8,6 +8,15 @@ declare module '@playwright/test' {
         getLangPage(): Promise<Lang>;
         getPageTestConfiguration(): Promise<Page>;
         getRandomDelay(): number;
+        verifyCookies(): Promise<void>;
+        //#endregion
+
+        //#region Home methods
+        selectOriginFlight(): Promise<void>;
+        selectDestinationFlight(): Promise<void>;
+        selectDateInitFlight(): Promise<void>;
+        selectDateEndFlight(): Promise<void>;
+        selectPassengers(): Promise<void>;
         //#endregion
     }
 }

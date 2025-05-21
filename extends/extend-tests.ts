@@ -1,10 +1,10 @@
-import { test as base } from "@playwright/test";
-import type { Lang } from "../types/aviancatype";
-import { chromium } from "playwright-extra"
+import { test as base, expect } from "@playwright/test";
+import type { copysType, Lang } from "../types/aviancatype";
 import type { Page } from "playwright";
 import { GetContext } from "../global/index";
+import { copys } from "../data/aviancadata";
 
-export const test2 = base.extend({
+export const test = base.extend({
     page: async ({ page }, use, testInfo) => {
         //#region métodos generales
         let step = 0;
@@ -44,23 +44,32 @@ export const test2 = base.extend({
         page.getPageTestConfiguration = async (): Promise<Page> => {
             const context = await GetContext();
             const page = await context.newPage();
-            await page.addInitScript(() => {
-                Object.defineProperty(navigator, 'webdriver', {
-                    get: () => false,
-                });
-            });
-
-            await page.goto('https://www.avianca.com/', {
-                waitUntil: "domcontentloaded",
-            });
-            await page.waitForSelector("#searchComponentDiv");
-            await page.takeScreenshot('01-goto-avianca');
-
             return page;
         }
 
         page.getRandomDelay = (): number => {
             return Math.random() * (200 - 50) + 50;
+        }
+
+        page.verifyCookies = async (): Promise<void> => {
+            const consentBtn = page.locator('#onetrust-pc-btn-handler');
+            if (await consentBtn.isVisible()) {
+                await consentBtn.click();
+                await page.locator('.save-preference-btn-handler.onetrust-close-btn-handler').click({ delay: page.getRandomDelay() });
+            }
+        }
+
+        page.selectOriginFlight = async (): Promise<void> => {
+            const currentLang = await page.getLangPage();
+            await expect(page.locator('.content-wrap')).toBeVisible();
+            await page.waitForSelector("#originBtn");
+            await expect(page.locator('#originBtn')).toBeVisible();
+            const origen = page.getByPlaceholder((copys[currentLang]).origen); //solucionar el error de copys
+            await page.locator('button#originBtn').click({ delay: page.getRandomDelay() });
+            await origen.fill(copys['ciudad_origen']);
+            await origen.press('Enter');
+            await (page.locator('id=' + copys['ciudad_origen'])).click({ delay: page.getRandomDelay() })
+            await page.takeScreenshot('03-ciudad-origen');
         }
 
         //#endregion

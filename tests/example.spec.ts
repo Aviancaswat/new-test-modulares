@@ -1,74 +1,56 @@
 import { expect } from '@playwright/test';
 import { copys } from "../data/aviancadata";
-import { test } from "../extends/extends-example";
+import { test } from "../extends/extend-tests";
 import { GetContext } from '../global';
 
 test.describe('Comenzo prueba avianca', () => {
-    test('prueba home avianca', async ({}, testInfo) => {
+    test('prueba home avianca', async () => {
         test.setTimeout(300_000);
-        let step = 0;
-        const getTimestamp = () => {
-            const now = new Date();
-            const pad = (n: number) => n.toString().padStart(2, '0');
-            const dd = pad(now.getDate());
-            const mm = pad(now.getMonth() + 1);
-            const yyyy = now.getFullYear();
-            const hh = pad(now.getHours());
-            const mi = pad(now.getMinutes());
-            const ss = pad(now.getSeconds());
-            return `fecha-${dd}-${mm}-${yyyy}_hora-${hh}-${mi}-${ss}`;
-        };
-        
         const context = await GetContext();
         const page = await context.newPage();
-
-        const takeScreenshot = async (label: string) => {
-            step++;
-            const timestamp = getTimestamp();
-            const name = `step${step}-${label}-${timestamp}.png`;
-            const buffer = await page.screenshot({ path: name });
-            await testInfo.attach(`${label} (${timestamp})`, {
-                body: buffer,
-                contentType: 'image/png',
+        await page.addInitScript(() => {
+            Object.defineProperty(navigator, 'webdriver', {
+                get: () => false,
             });
-        };
+        });
+        await page.goto('https://www.avianca.com/', {
+            waitUntil: "domcontentloaded",
+        });
+
+        await page.waitForSelector("#searchComponentDiv");
+        await page.takeScreenshot('01-goto-avianca');
 
         const idioma = copys.getLang();
         const getRandomDelay = () => Math.random() * (200 - 50) + 50;
 
-        const consentBtn = page.locator('#onetrust-pc-btn-handler', { delay: getRandomDelay() });
-
-        if (await consentBtn.isVisible()) {
-            await consentBtn.click();
-            await page.locator('.save-preference-btn-handler.onetrust-close-btn-handler').click({ delay: getRandomDelay() });
-        }
+        await page.verifyCookies();
 
         await expect(page.locator('.content-wrap')).toBeVisible();
         await page.waitForSelector("#originBtn");
         await expect(page.locator('#originBtn')).toBeVisible();
         const origen = page.getByPlaceholder((copys[idioma]).origen);
         await page.locator('button#originBtn').click({ delay: getRandomDelay() });
-        await origen.fill(copys['ciudad_origen'], { delay: getRandomDelay() });
+        await origen.fill(copys['ciudad_origen']);
         await origen.press('Enter');
         await (page.locator('id=' + copys['ciudad_origen'])).click({ delay: getRandomDelay() })
-        await takeScreenshot('03-ciudad-origen');
+        await page.takeScreenshot('03-ciudad-origen');
 
         await expect(page.getByPlaceholder(copys[idioma].destino)).toBeVisible();
         const destino = page.getByPlaceholder(copys[idioma].destino);
         await destino.click({ delay: getRandomDelay() });
-        await destino.fill(copys['ciudad_destino'], { delay: getRandomDelay() });
+        await destino.fill(copys['ciudad_destino'], { timeout: getRandomDelay() });
         await destino.press('Enter');
         await (page.locator('id=' + copys['ciudad_destino'])).click({ delay: getRandomDelay() });
-        await takeScreenshot('04-ciudad-destino');
+        await page.takeScreenshot('04-ciudad-destino');
 
         await page.waitForSelector("#departureInputDatePickerId");
         const fechaIda = await page.locator('id=departureInputDatePickerId')
         fechaIda.click({ delay: getRandomDelay() });
         await page.locator('span').filter({ hasText: copys['fecha_salida'] }).click({ delay: getRandomDelay() });
-        await takeScreenshot('05-fecha-ida');
+        await page.takeScreenshot('05-fecha-ida');
         await page.waitForTimeout(3000);
         await page.locator('span').filter({ hasText: copys['fecha_llegada'] }).click({ delay: getRandomDelay() });
-        await takeScreenshot('06-fecha-vuelta');
+        await page.takeScreenshot('06-fecha-vuelta');
 
         await page.getByRole('button', { name: '' }).nth(1).click();
         await page.getByRole('button', { name: '' }).nth(2).click();
@@ -76,13 +58,13 @@ test.describe('Comenzo prueba avianca', () => {
         const confirmar = await page.locator('div#paxControlSearchId > div > div:nth-of-type(2) > div > div > button')
         confirmar.click({ delay: getRandomDelay() });
 
-        await takeScreenshot('07-seleccion-pasajeros');
+        await page.takeScreenshot('07-seleccion-pasajeros');
 
         //await page.locator('.divButtontext').first().screenshot({ path: 'ALF1-1520.png' });
 
         await expect(page.getByRole('button', { name: copys[idioma].buscar, exact: true })).toBeVisible()
         await page.getByRole('button', { name: copys[idioma].buscar, exact: true }).click({ delay: getRandomDelay() });
-        await takeScreenshot('08-buscar');
+        await page.takeScreenshot('08-buscar');
 
         await page.waitForSelector('#pageWrap');
         await expect(page.locator(".journey_price_fare-select_label-text").first()).toBeVisible();
@@ -90,7 +72,7 @@ test.describe('Comenzo prueba avianca', () => {
         await page.waitForSelector(".journey_fares");
         await page.locator('.journey_fares').first().locator('.light-basic.cro-new-basic-button').click({ delay: getRandomDelay() });
         // await page.locator('.journey_fares').first().locator('.fare-flex').click();
-        await takeScreenshot('09-seleccion-vuelo-ida');
+        await page.takeScreenshot('09-seleccion-vuelo-ida');
 
         await page.waitForTimeout(1500);
         const isVisibleModal = await page.locator("#FB310").first().isVisible();
@@ -105,7 +87,7 @@ test.describe('Comenzo prueba avianca', () => {
         await expect(containerVuelta).toBeVisible();
         // await expect(page.locator('.journey_price_fare-select_label-text').nth(22)).toBeVisible();
         await containerVuelta.locator(".journey_price_fare-select_label-text").first().click({ delay: getRandomDelay() });
-        await takeScreenshot('13-seleccion-vuelo-regreso');
+        await page.takeScreenshot('13-seleccion-vuelo-regreso');
         await containerVuelta.locator('.journey_fares').first().locator('.light-basic.cro-new-basic-button').click({ delay: getRandomDelay() });
         await page.waitForTimeout(1500);
 
@@ -116,7 +98,7 @@ test.describe('Comenzo prueba avianca', () => {
             await page.locator(".cro-button.cro-no-accept-upsell-button").first().click({ delay: getRandomDelay() });
         }
 
-        await takeScreenshot('13-resumen-de-vuelos-seleccionados');
+        await page.takeScreenshot('13-resumen-de-vuelos-seleccionados');
 
         await page.waitForSelector(".trip-summary");
         const buttonConfirmResumen = page.locator(".button.page_button.btn-action");
@@ -126,7 +108,7 @@ test.describe('Comenzo prueba avianca', () => {
 
         //página de pasajeros
         await page.waitForSelector(".passenger_data_group");
-        await takeScreenshot("inicio-de-llenado-pagina-de-pasajeros");
+        await page.takeScreenshot("inicio-de-llenado-pagina-de-pasajeros");
 
         await page.evaluate(() => {
             const userNamesData: Array<string> = [
@@ -275,7 +257,7 @@ test.describe('Comenzo prueba avianca', () => {
             setValuesDefaultAutoForm();
         });
 
-        await takeScreenshot("llenado-de-pasajeros-ok");
+        await page.takeScreenshot("llenado-de-pasajeros-ok");
         // // Esperar a que aparezca el modal
         // await page.waitForSelector('ngb-modal-window', { timeout: 5_000 });
         // // Localizar el botón “OK” del footer y hacer click
@@ -290,24 +272,24 @@ test.describe('Comenzo prueba avianca', () => {
 
         await page.waitForSelector(".main-banner--section-offer");
         await page.waitForTimeout(8000);
-        await takeScreenshot("Pagina-de-servicios");
+        await page.takeScreenshot("Pagina-de-servicios");
         await expect(page.locator("#serviceButtonTypeBusinessLounge")).toBeVisible();
         await page.locator('#serviceButtonTypeBusinessLounge').click({ delay: getRandomDelay() });
         await page.locator('.service_item_button.button').first().click({ delay: getRandomDelay() });
-        await takeScreenshot("Servicio avianca-lounges");
+        await page.takeScreenshot("Servicio avianca-lounges");
         await page.locator('.button.amount-summary_button.amount-summary_button-action.is-action.ng-star-inserted').last().click({ delay: getRandomDelay() });
 
         await expect(page.locator('#serviceButtonTypeSpecialAssistance')).toBeVisible();
         await page.locator('#serviceButtonTypeSpecialAssistance').click({ delay: getRandomDelay() });
-        await takeScreenshot("Servicio asistencia especial");
+        await page.takeScreenshot("Servicio asistencia especial");
         await page.locator('.service_item_button.button').first().click({ delay: getRandomDelay() });
         await page.locator('.button.amount-summary_button.amount-summary_button-action.is-action.ng-star-inserted').last().click({ delay: getRandomDelay() });
 
         await expect(page.locator('.services-card_action_button.button').last()).toBeVisible();
-        await takeScreenshot("Asistencia en viaje");
+        await page.takeScreenshot("Asistencia en viaje");
         await page.locator('.services-card_action_button.button').last().click({ delay: getRandomDelay() });
         await page.locator('.button.amount-summary_button.amount-summary_button-action.is-action.ng-star-inserted.FB-newConfirmButton').click({ delay: getRandomDelay() });
-        await takeScreenshot("Servicios añadidos");
+        await page.takeScreenshot("Servicios añadidos");
         await expect(page.locator(".button_label").last()).toBeVisible();
         await page.locator('.button_label').last().click({ delay: getRandomDelay() });
 
@@ -316,25 +298,25 @@ test.describe('Comenzo prueba avianca', () => {
             await page.locator('.terciary-button').last().click({ delay: getRandomDelay() })
         }
         await page.waitForTimeout(12000);
-        await takeScreenshot("Pagina-de-seleccion-asientos");
+        await page.takeScreenshot("Pagina-de-seleccion-asientos");
         //seleccion de asientos
         const pasajeros = page.locator(".pax-selector_pax-avatar")
 
         for (const e of await pasajeros.all()) {
-            await takeScreenshot("seleccion-asiento");
+            await page.takeScreenshot("seleccion-asiento");
             await expect(page.locator(".seat-number").first()).toBeVisible();
             await page.locator('.seat-number').first().click({ delay: getRandomDelay() });
             await page.waitForTimeout(8000);
         }
 
         await expect(page.locator(".next-flight-code")).toBeVisible();
-        await takeScreenshot("seleccion-asiento-vuelta");
+        await page.takeScreenshot("seleccion-asiento-vuelta");
         await page.locator('.next-flight-code').click({ delay: getRandomDelay() });
 
         const pasajerosVuelta = page.locator(".pax-selector_pax-avatar")
 
         for (const j of await pasajerosVuelta.all()) {
-            await takeScreenshot("seleccion-asiento");
+            await page.takeScreenshot("seleccion-asiento");
             await expect(page.locator(".seat-number").first()).toBeVisible();
             await page.locator('.seat-number').first().click({ delay: getRandomDelay() });
             await page.waitForTimeout(8000);
@@ -344,7 +326,7 @@ test.describe('Comenzo prueba avianca', () => {
         await page.getByRole('button', { name: copys[idioma].pagar, exact: true }).click({ delay: getRandomDelay() });
         await page.waitForTimeout(5000);
         // await expect(page.locator('.payment-container_title')).toBeVisible();
-        // await takeScreenshot("pagos");
+        // await page.takeScreenshot("pagos");
 
         // const noOtraTarjeta = page.locator('.fb-left-container');
         // await expect(noOtraTarjeta).toBeVisible();
@@ -384,16 +366,16 @@ test.describe('Comenzo prueba avianca', () => {
         await expect(countryOption).toBeVisible();
         await countryOption.click({ delay: getRandomDelay() });
 
-        await takeScreenshot('19-country-seleccionado');
+        await page.takeScreenshot('19-country-seleccionado');
 
         // Aceptar Términos
         const termsCheckbox = page.locator('input#terms');
         await expect(termsCheckbox).toBeVisible();
         await termsCheckbox.check();
-        await takeScreenshot('20-aceptar-terminos');
+        await page.takeScreenshot('20-aceptar-terminos');
 
         // Captura final de facturación
-        await takeScreenshot('21-datos-facturacion');
+        await page.takeScreenshot('21-datos-facturacion');
 
     });
 });
