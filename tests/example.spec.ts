@@ -25,40 +25,10 @@ test.describe('Comenzo prueba avianca', () => {
 
         await page.verifyCookies();
 
-        await expect(page.locator('.content-wrap')).toBeVisible();
-        await page.waitForSelector("#originBtn");
-        await expect(page.locator('#originBtn')).toBeVisible();
-        const origen = page.getByPlaceholder((copys[idioma]).origen);
-        await page.locator('button#originBtn').click({ delay: getRandomDelay() });
-        await origen.fill(copys['ciudad_origen']);
-        await origen.press('Enter');
-        await (page.locator('id=' + copys['ciudad_origen'])).click({ delay: getRandomDelay() })
-        await page.takeScreenshot('03-ciudad-origen');
-
-        await expect(page.getByPlaceholder(copys[idioma].destino)).toBeVisible();
-        const destino = page.getByPlaceholder(copys[idioma].destino);
-        await destino.click({ delay: getRandomDelay() });
-        await destino.fill(copys['ciudad_destino'], { timeout: getRandomDelay() });
-        await destino.press('Enter');
-        await (page.locator('id=' + copys['ciudad_destino'])).click({ delay: getRandomDelay() });
-        await page.takeScreenshot('04-ciudad-destino');
-
-        await page.waitForSelector("#departureInputDatePickerId");
-        const fechaIda = await page.locator('id=departureInputDatePickerId')
-        fechaIda.click({ delay: getRandomDelay() });
-        await page.locator('span').filter({ hasText: copys['fecha_salida'] }).click({ delay: getRandomDelay() });
-        await page.takeScreenshot('05-fecha-ida');
-        await page.waitForTimeout(3000);
-        await page.locator('span').filter({ hasText: copys['fecha_llegada'] }).click({ delay: getRandomDelay() });
-        await page.takeScreenshot('06-fecha-vuelta');
-
-        await page.getByRole('button', { name: '' }).nth(1).click();
-        await page.getByRole('button', { name: '' }).nth(2).click();
-        await page.getByRole('button', { name: '' }).nth(3).click();
-        const confirmar = await page.locator('div#paxControlSearchId > div > div:nth-of-type(2) > div > div > button')
-        confirmar.click({ delay: getRandomDelay() });
-
-        await page.takeScreenshot('07-seleccion-pasajeros');
+        await page.selectOriginFlight();
+        await page.selectDestinationFlight();
+        await page.selectDateInitFlight();
+        await page.selectPassengers();
 
         //await page.locator('.divButtontext').first().screenshot({ path: 'ALF1-1520.png' });
 

@@ -72,6 +72,37 @@ export const test = base.extend({
             await page.takeScreenshot('03-ciudad-origen');
         }
 
+        page.selectDestinationFlight = async (): Promise<void> => {
+            const currentLang = await page.getLangPage();
+            await expect(page.getByPlaceholder(copys[currentLang].destino)).toBeVisible();
+            const destino = page.getByPlaceholder(copys[currentLang].destino);
+            await destino.click({ delay: page.getRandomDelay() });
+            await destino.fill(copys['ciudad_destino'], { timeout: page.getRandomDelay() });
+            await destino.press('Enter');
+            await (page.locator('id=' + copys['ciudad_destino'])).click({ delay: page.getRandomDelay() });
+            await page.takeScreenshot('04-ciudad-destino');
+        }
+
+        page.selectDateInitFlight = async (): Promise<void> => {
+            await page.waitForSelector("#departureInputDatePickerId");
+            const fechaIda = await page.locator('id=departureInputDatePickerId')
+            fechaIda.click({ delay: page.getRandomDelay() });
+            await page.locator('span').filter({ hasText: copys['fecha_salida'] }).click({ delay: page.getRandomDelay() });
+            await page.takeScreenshot('05-fecha-ida');
+            await page.waitForTimeout(3000);
+            await page.locator('span').filter({ hasText: copys['fecha_llegada'] }).click({ delay: page.getRandomDelay() });
+            await page.takeScreenshot('06-fecha-vuelta');
+        }
+
+        page.selectPassengers = async (): Promise<void> => {
+            await page.getByRole('button', { name: '' }).nth(1).click();
+            await page.getByRole('button', { name: '' }).nth(2).click();
+            await page.getByRole('button', { name: '' }).nth(3).click();
+            const confirmar = await page.locator('div#paxControlSearchId > div > div:nth-of-type(2) > div > div > button')
+            confirmar.click({ delay: page.getRandomDelay() });
+            await page.takeScreenshot('07-seleccion-pasajeros');
+        }
+
         //#endregion
         await use(page);
     }
