@@ -13,6 +13,7 @@ test.describe('Comenzo prueba avianca', () => {
                 get: () => false,
             });
         });
+        
         await page.goto('https://www.avianca.com/', {
             waitUntil: "domcontentloaded",
         });
@@ -24,7 +25,6 @@ test.describe('Comenzo prueba avianca', () => {
         const getRandomDelay = () => Math.random() * (200 - 50) + 50;
 
         await page.verifyCookies();
-
         await page.selectOriginFlight();
         await page.selectDestinationFlight();
         await page.selectDateInitFlight();
@@ -93,7 +93,6 @@ test.describe('Comenzo prueba avianca', () => {
                 "luis vega",
                 "susan brown"
             ];
-
             const lastNamesData: Array<string> = [
                 "Doe",
                 "Smith",
@@ -106,11 +105,9 @@ test.describe('Comenzo prueba avianca', () => {
                 "Vega",
                 "Brown"
             ];
-
             const emailsData: Array<string> = [
                 "monitoreo.digital@avianca.com"
             ];
-
             const phoneNumbersData: Array<string> = [
                 "123456",
                 "987654",
@@ -123,42 +120,34 @@ test.describe('Comenzo prueba avianca', () => {
                 "778899",
                 "334455"
             ];
-
             const getDataRandom = (data: Array<string> = []): string => {
                 return data[Math.floor(Math.random() * data.length)];
             }
-
             const getValueElement = (element: HTMLInputElement): string => {
                 let value: string | null = null;
                 if (element.name === "email") {
-                    console.log('----ENTRO-----');
                     value = getDataRandom(emailsData);
                 }
                 else if (element.name === "confirmEmail") {
                     value = getDataRandom(emailsData);
-                    console.log('----ENTRO-----');
                 }
                 else if (element.name === "phone_phoneNumberId") {
                     value = getDataRandom(phoneNumbersData);
-                    console.log('----ENTRO-----');
                 }
                 else if (element.id.includes("IdFirstName")) {
                     value = getDataRandom(userNamesData);
-                    console.log('----ENTRO-----');
                 }
                 else {
                     value = getDataRandom(lastNamesData);
-                    console.log('----ENTRO-----lastNamesData' + lastNamesData);
                 }
+                
                 return value;
             }
-
             const getButtonAndClickItem = () => {
                 const listOptions = document.querySelector(".ui-dropdown_list");
                 const buttonElement = listOptions?.querySelector(".ui-dropdown_item>button") as HTMLButtonElement;
                 buttonElement.click();
             }
-
             const setValuesDefaultAutoForm = async () => {
                 const elements = document.querySelectorAll('.ui-input');
                 Array.from(elements).forEach((element) => {
@@ -167,19 +156,15 @@ test.describe('Comenzo prueba avianca', () => {
                         elementButton.click();
                         const listOptions = document.querySelector(".ui-dropdown_list");
                         (listOptions?.querySelector(".ui-dropdown_item>button") as HTMLButtonElement)?.click();
-                        console.log('****element.id****' + element.id);
                         if (element.id === "passengerId") {
                             elementButton.click();
                             setTimeout(() => {
-                                console.log('++++++++++Entro++++++++');
                                 getButtonAndClickItem();
                             }, 1000);
                         }
                         else if (element.id === 'phone_prefixPhoneId') {
                             setTimeout(() => {
-                                console.log('++++++++++Entro++++++++');
                                 elementButton.click();
-
                                 getButtonAndClickItem();
                             }, 1000);
                         }

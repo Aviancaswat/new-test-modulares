@@ -1,8 +1,9 @@
 import { test as base, expect } from "@playwright/test";
-import type { copysType, Lang } from "../types/aviancatype";
+import type { Lang } from "../types/aviancatype";
 import type { Page } from "playwright";
 import { GetContext } from "../global/index";
 import { copys } from "../data/aviancadata";
+export { expect } from "@playwright/test";
 
 export const test = base.extend({
     page: async ({ page }, use, testInfo) => {
@@ -107,5 +108,3 @@ export const test = base.extend({
         await use(page);
     }
 });
-
-export { expect } from "@playwright/test";
