@@ -32,13 +32,7 @@ test.describe('Comenzo prueba avianca', () => {
         await page.validateModalFlights();
         await page.selectFlightReturn();
         await page.validateModalFlights();
-        await page.takeScreenshot('13-resumen-de-vuelos-seleccionados');
-
-        await page.waitForSelector(".trip-summary");
-        const buttonConfirmResumen = page.locator(".button.page_button.btn-action");
-        await expect(buttonConfirmResumen).toBeVisible();
-        buttonConfirmResumen.scrollIntoViewIfNeeded();
-        await buttonConfirmResumen.click({ delay: getRandomDelay() });
+        await page.continueToServices();
 
         //página de pasajeros
         await page.waitForSelector(".passenger_data_group");

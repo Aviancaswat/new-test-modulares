@@ -24,6 +24,7 @@ declare module '@playwright/test' {
         selectFlightOutbound(): Promise<void>;
         selectFlightReturn(): Promise<void>;
         validateModalFlights(): Promise<void>;
+        continueToServices(): Promise<void>;
         //#endregion
     }
 }

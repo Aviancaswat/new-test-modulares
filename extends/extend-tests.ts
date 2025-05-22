@@ -144,6 +144,15 @@ export const test = base.extend({
             }
         }
 
+        page.continueToServices = async (): Promise<void> => {
+            await page.takeScreenshot('13-resumen-de-vuelos-seleccionados');
+            await page.waitForSelector(".trip-summary");
+            const buttonConfirmResumen = page.locator(".button.page_button.btn-action");
+            await expect(buttonConfirmResumen).toBeVisible();
+            buttonConfirmResumen.scrollIntoViewIfNeeded();
+            await buttonConfirmResumen.click({ delay: page.getRandomDelay() });
+        }
+
         //#endregion
         await use(page);
     }
