@@ -1,12 +1,15 @@
-import { copysType, Lang } from "../types/aviancatype";
+import type { configurationType, translationType, Lang } from "../types/aviancatype";
 
-const copys: copysType = {
+const config: configurationType = {
     idioma: 'es' as Lang,
     pais: 'CO',
     fecha_salida: 'may 26',
     fecha_llegada: 'may 29',
     ciudad_origen: 'CLO',
-    ciudad_destino: 'BOG',
+    ciudad_destino: 'BOG'
+}
+
+const translations: translationType = {
     es: {
         origen: 'Origen',
         destino: 'Hacia',
@@ -35,7 +38,12 @@ const copys: copysType = {
         vuelta: 'Retour',
         pagar: ' Continuer',
     },
-    getLang: () => copys.idioma as Lang
 };
+
+const copys = {
+    ...config,
+    ...translations,
+    getLang: () => config.idioma as Lang
+}
 
 export { copys };

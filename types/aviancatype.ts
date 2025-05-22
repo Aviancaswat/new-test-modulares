@@ -1,13 +1,15 @@
-
 type Lang = 'es' | 'en' | 'pt' | 'fr';
 
-type copysType = {
+type configurationType = {
     idioma: Lang,
     pais: string,
     fecha_salida: string,
     fecha_llegada: string,
     ciudad_origen: string,
-    ciudad_destino: string,
+    ciudad_destino: string
+}
+
+type translationType = {
     es: {
         origen: string,
         destino: string,
@@ -36,7 +38,6 @@ type copysType = {
         vuelta: string,
         pagar: string
     },
-    getLang: () => Lang
 }
 
-export type { Lang, copysType };
+export type { Lang, configurationType, translationType };

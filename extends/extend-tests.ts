@@ -61,11 +61,11 @@ export const test = base.extend({
         }
 
         page.selectOriginFlight = async (): Promise<void> => {
-            const currentLang = await page.getLangPage();
+            const currentLang = await page.getLangPage() as Lang;
             await expect(page.locator('.content-wrap')).toBeVisible();
             await page.waitForSelector("#originBtn");
             await expect(page.locator('#originBtn')).toBeVisible();
-            const origen = page.getByPlaceholder((copys[currentLang]).origen); //solucionar el error de copys
+            const origen = page.getByPlaceholder(copys[currentLang].origen); //solucionar el error de copys
             await page.locator('button#originBtn').click({ delay: page.getRandomDelay() });
             await origen.fill(copys['ciudad_origen']);
             await origen.press('Enter');
@@ -74,7 +74,7 @@ export const test = base.extend({
         }
 
         page.selectDestinationFlight = async (): Promise<void> => {
-            const currentLang = await page.getLangPage();
+            const currentLang = await page.getLangPage() as Lang;
             await expect(page.getByPlaceholder(copys[currentLang].destino)).toBeVisible();
             const destino = page.getByPlaceholder(copys[currentLang].destino);
             await destino.click({ delay: page.getRandomDelay() });
