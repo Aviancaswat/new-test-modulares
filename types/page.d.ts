@@ -17,7 +17,7 @@ declare module '@playwright/test' {
         selectDateInitFlight(): Promise<void>;
         selectDateEndFlight(): Promise<void>;
         selectPassengers(): Promise<void>;
-        searchFlights(): Promise<void>;
+        continueSelectedFlights(): Promise<void>;
         //#endregion
 
         //#region Selección de vuelos
@@ -25,6 +25,11 @@ declare module '@playwright/test' {
         selectFlightReturn(): Promise<void>;
         validateModalFlights(): Promise<void>;
         continueToServices(): Promise<void>;
+        //#endregion
+
+        //#region llenado de pasajeros
+        fillPassengerForm(): Promise<void>;
+        continueToSelectServices(): Promise<void>;
         //#endregion
     }
 }
