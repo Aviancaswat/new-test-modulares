@@ -37,13 +37,12 @@ const translations: translationType = {
         buscar: 'Rechercher',
         vuelta: 'Retour',
         pagar: ' Continuer',
-    },
+    }
 };
 
 const copys = {
     ...config,
-    ...translations,
-    getLang: () => config.idioma as Lang
+    ...translations
 }
 
 export { copys };

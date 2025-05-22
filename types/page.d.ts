@@ -17,6 +17,7 @@ declare module '@playwright/test' {
         selectDateInitFlight(): Promise<void>;
         selectDateEndFlight(): Promise<void>;
         selectPassengers(): Promise<void>;
+        searchFlights(): Promise<void>;
         //#endregion
     }
 }

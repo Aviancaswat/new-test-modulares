@@ -60,6 +60,10 @@ export const test = base.extend({
             }
         }
 
+        //#endregion
+
+        //#region Home métodos
+
         page.selectOriginFlight = async (): Promise<void> => {
             const currentLang = await page.getLangPage() as Lang;
             await expect(page.locator('.content-wrap')).toBeVisible();
@@ -102,6 +106,13 @@ export const test = base.extend({
             const confirmar = await page.locator('div#paxControlSearchId > div > div:nth-of-type(2) > div > div > button')
             confirmar.click({ delay: page.getRandomDelay() });
             await page.takeScreenshot('07-seleccion-pasajeros');
+        }
+
+        page.searchFlights = async (): Promise<void> => {
+            const currentLang = await page.getLangPage() as Lang;
+            await expect(page.getByRole('button', { name: copys[currentLang].buscar, exact: true })).toBeVisible()
+            await page.getByRole('button', { name: copys[currentLang].buscar, exact: true }).click({ delay: getRandomDelay() });
+            await page.takeScreenshot('08-buscar');
         }
 
         //#endregion
