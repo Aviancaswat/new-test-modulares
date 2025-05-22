@@ -13,7 +13,7 @@ test.describe('Comenzo prueba avianca', () => {
                 get: () => false,
             });
         });
-        
+
         await page.goto('https://www.avianca.com/', {
             waitUntil: "domcontentloaded",
         });
@@ -21,53 +21,17 @@ test.describe('Comenzo prueba avianca', () => {
         await page.waitForSelector("#searchComponentDiv");
         await page.takeScreenshot('01-goto-avianca');
 
-        const idioma = copys.getLang();
-        const getRandomDelay = () => Math.random() * (200 - 50) + 50;
-
         await page.verifyCookies();
         await page.selectOriginFlight();
         await page.selectDestinationFlight();
         await page.selectDateInitFlight();
         await page.selectPassengers();
+        await page.searchFlights();
 
-        //await page.locator('.divButtontext').first().screenshot({ path: 'ALF1-1520.png' });
-
-        await expect(page.getByRole('button', { name: copys[idioma].buscar, exact: true })).toBeVisible()
-        await page.getByRole('button', { name: copys[idioma].buscar, exact: true }).click({ delay: getRandomDelay() });
-        await page.takeScreenshot('08-buscar');
-
-        await page.waitForSelector('#pageWrap');
-        await expect(page.locator(".journey_price_fare-select_label-text").first()).toBeVisible();
-        await page.locator('.journey_price_fare-select_label-text').first().click({ delay: getRandomDelay() });
-        await page.waitForSelector(".journey_fares");
-        await page.locator('.journey_fares').first().locator('.light-basic.cro-new-basic-button').click({ delay: getRandomDelay() });
-        // await page.locator('.journey_fares').first().locator('.fare-flex').click();
-        await page.takeScreenshot('09-seleccion-vuelo-ida');
-
-        await page.waitForTimeout(1500);
-        const isVisibleModal = await page.locator("#FB310").first().isVisible();
-
-        if (isVisibleModal) {
-            await expect(page.locator(".cro-button.cro-no-accept-upsell-button")).toBeVisible();
-            await page.locator(".cro-button.cro-no-accept-upsell-button").first().click({ delay: getRandomDelay() });
-        }
-
-        await page.waitForSelector("#journeysContainerId_1", { timeout: 15000 });
-        const containerVuelta = page.locator("#journeysContainerId_1");
-        await expect(containerVuelta).toBeVisible();
-        // await expect(page.locator('.journey_price_fare-select_label-text').nth(22)).toBeVisible();
-        await containerVuelta.locator(".journey_price_fare-select_label-text").first().click({ delay: getRandomDelay() });
-        await page.takeScreenshot('13-seleccion-vuelo-regreso');
-        await containerVuelta.locator('.journey_fares').first().locator('.light-basic.cro-new-basic-button').click({ delay: getRandomDelay() });
-        await page.waitForTimeout(1500);
-
-        const isVisibleModal2 = await page.locator("#FB310").first().isVisible();
-
-        if (isVisibleModal2) {
-            await expect(page.locator(".cro-button.cro-no-accept-upsell-button")).toBeVisible();
-            await page.locator(".cro-button.cro-no-accept-upsell-button").first().click({ delay: getRandomDelay() });
-        }
-
+        await page.selectFlightOutbound();
+        await page.validateModalFlights();
+        await page.selectFlightReturn();
+        await page.validateModalFlights();
         await page.takeScreenshot('13-resumen-de-vuelos-seleccionados');
 
         await page.waitForSelector(".trip-summary");
@@ -140,7 +104,7 @@ test.describe('Comenzo prueba avianca', () => {
                 else {
                     value = getDataRandom(lastNamesData);
                 }
-                
+
                 return value;
             }
             const getButtonAndClickItem = () => {

@@ -19,5 +19,11 @@ declare module '@playwright/test' {
         selectPassengers(): Promise<void>;
         searchFlights(): Promise<void>;
         //#endregion
+
+        //#region Selección de vuelos
+        selectFlightOutbound(): Promise<void>;
+        selectFlightReturn(): Promise<void>;
+        validateModalFlights(): Promise<void>;
+        //#endregion
     }
 }

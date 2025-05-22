@@ -111,8 +111,37 @@ export const test = base.extend({
         page.searchFlights = async (): Promise<void> => {
             const currentLang = await page.getLangPage() as Lang;
             await expect(page.getByRole('button', { name: copys[currentLang].buscar, exact: true })).toBeVisible()
-            await page.getByRole('button', { name: copys[currentLang].buscar, exact: true }).click({ delay: getRandomDelay() });
+            await page.getByRole('button', { name: copys[currentLang].buscar, exact: true }).click({ delay: page.getRandomDelay() });
             await page.takeScreenshot('08-buscar');
+        }
+
+        page.selectFlightOutbound = async (): Promise<void> => {
+            await page.waitForSelector('#pageWrap');
+            await expect(page.locator(".journey_price_fare-select_label-text").first()).toBeVisible();
+            await page.locator('.journey_price_fare-select_label-text').first().click({ delay: page.getRandomDelay() });
+            await page.waitForSelector(".journey_fares");
+            await page.locator('.journey_fares').first().locator('.light-basic.cro-new-basic-button').click({ delay: page.getRandomDelay() });
+            await page.takeScreenshot('09-seleccion-vuelo-ida');
+        }
+
+        page.selectFlightReturn = async (): Promise<void> => {
+            await page.waitForSelector("#journeysContainerId_1", { timeout: 15000 });
+            const containerVuelta = page.locator("#journeysContainerId_1");
+            await expect(containerVuelta).toBeVisible();
+            await containerVuelta.locator(".journey_price_fare-select_label-text").first().click({ delay: page.getRandomDelay() });
+            await page.takeScreenshot('13-seleccion-vuelo-regreso');
+            await containerVuelta.locator('.journey_fares').first().locator('.light-basic.cro-new-basic-button').click({ delay: page.getRandomDelay() });
+            await page.waitForTimeout(1500);
+        }
+
+        page.validateModalFlights = async (): Promise<void> => {
+            await page.waitForTimeout(1500);
+            const isVisibleModal = await page.locator("#FB310").first().isVisible();
+
+            if (isVisibleModal) {
+                await expect(page.locator(".cro-button.cro-no-accept-upsell-button")).toBeVisible();
+                await page.locator(".cro-button.cro-no-accept-upsell-button").first().click({ delay: page.getRandomDelay() });
+            }
         }
 
         //#endregion
