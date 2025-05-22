@@ -36,72 +36,14 @@ test.describe('Comenzo prueba avianca', () => {
         await page.validateModalFlights();
         await page.continueToServices();
 
-        //página de pasajeros
-        await page.fillPassengerForm();
+        // página de pasajeros
+        await page.pagePassengers();
         await page.continueToSelectServices();
+        await page.pageServices();
 
+        //página de asientos
+        await page.pageSeats();
 
-        await page.waitForSelector(".main-banner--section-offer");
-        await page.waitForTimeout(8000);
-        await page.takeScreenshot("Pagina-de-servicios");
-        await expect(page.locator("#serviceButtonTypeBusinessLounge")).toBeVisible();
-        await page.locator('#serviceButtonTypeBusinessLounge').click({ delay: getRandomDelay() });
-        await page.locator('.service_item_button.button').first().click({ delay: getRandomDelay() });
-        await page.takeScreenshot("Servicio avianca-lounges");
-        await page.locator('.button.amount-summary_button.amount-summary_button-action.is-action.ng-star-inserted').last().click({ delay: getRandomDelay() });
-
-        await expect(page.locator('#serviceButtonTypeSpecialAssistance')).toBeVisible();
-        await page.locator('#serviceButtonTypeSpecialAssistance').click({ delay: getRandomDelay() });
-        await page.takeScreenshot("Servicio asistencia especial");
-        await page.locator('.service_item_button.button').first().click({ delay: getRandomDelay() });
-        await page.locator('.button.amount-summary_button.amount-summary_button-action.is-action.ng-star-inserted').last().click({ delay: getRandomDelay() });
-
-        await expect(page.locator('.services-card_action_button.button').last()).toBeVisible();
-        await page.takeScreenshot("Asistencia en viaje");
-        await page.locator('.services-card_action_button.button').last().click({ delay: getRandomDelay() });
-        await page.locator('.button.amount-summary_button.amount-summary_button-action.is-action.ng-star-inserted.FB-newConfirmButton').click({ delay: getRandomDelay() });
-        await page.takeScreenshot("Servicios añadidos");
-        await expect(page.locator(".button_label").last()).toBeVisible();
-        await page.locator('.button_label').last().click({ delay: getRandomDelay() });
-
-        const upsellService = await page.locator('.terciary-button').last().isVisible()
-        if (upsellService) {
-            await page.locator('.terciary-button').last().click({ delay: getRandomDelay() })
-        }
-        await page.waitForTimeout(12000);
-        await page.takeScreenshot("Pagina-de-seleccion-asientos");
-        //seleccion de asientos
-        const pasajeros = page.locator(".pax-selector_pax-avatar")
-
-        for (const e of await pasajeros.all()) {
-            await page.takeScreenshot("seleccion-asiento");
-            await expect(page.locator(".seat-number").first()).toBeVisible();
-            await page.locator('.seat-number').first().click({ delay: getRandomDelay() });
-            await page.waitForTimeout(8000);
-        }
-
-        await expect(page.locator(".next-flight-code")).toBeVisible();
-        await page.takeScreenshot("seleccion-asiento-vuelta");
-        await page.locator('.next-flight-code').click({ delay: getRandomDelay() });
-
-        const pasajerosVuelta = page.locator(".pax-selector_pax-avatar")
-
-        for (const j of await pasajerosVuelta.all()) {
-            await page.takeScreenshot("seleccion-asiento");
-            await expect(page.locator(".seat-number").first()).toBeVisible();
-            await page.locator('.seat-number').first().click({ delay: getRandomDelay() });
-            await page.waitForTimeout(8000);
-        }
-
-        await expect(page.getByRole('button', { name: copys[idioma].pagar, exact: true })).toBeVisible()
-        await page.getByRole('button', { name: copys[idioma].pagar, exact: true }).click({ delay: getRandomDelay() });
-        await page.waitForTimeout(5000);
-        // await expect(page.locator('.payment-container_title')).toBeVisible();
-        // await page.takeScreenshot("pagos");
-
-        // const noOtraTarjeta = page.locator('.fb-left-container');
-        // await expect(noOtraTarjeta).toBeVisible();
-        // await noOtraTarjeta.click();
         await page.waitForTimeout(1000);
 
         // Llenar datos de facturación

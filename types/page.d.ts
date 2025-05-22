@@ -27,9 +27,15 @@ declare module '@playwright/test' {
         continueToServices(): Promise<void>;
         //#endregion
 
-        //#region llenado de pasajeros
-        fillPassengerForm(): Promise<void>;
+        //#region continue methods
         continueToSelectServices(): Promise<void>;
+        //#endregion
+
+        //#region llenado de pasajeros
+        pagePassengers(): Promise<void>;
+        pageServices(): Promise<void>;
+        pageSeats(): Promise<void>;
+        pagePayment(): Promise<void>;
         //#endregion
     }
 }
