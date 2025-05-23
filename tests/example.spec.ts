@@ -1,8 +1,8 @@
 import { test } from "../extends/extend-tests";
 import { GetContext } from '../global';
 
-test.describe('Comenzo prueba avianca', () => {
-    test('prueba home avianca', async () => {
+test.describe('Test end to end Avianca', () => {
+    test('Home =>>>> payments', async () => {
         test.setTimeout(100_000);
 
         const context = await GetContext();

@@ -3,7 +3,6 @@ import type { Lang } from "../types/aviancatype";
 import type { Page } from "playwright";
 import { GetContext } from "../global/index";
 import { copys } from "../data/aviancadata";
-import { promises } from "dns";
 export { expect } from "@playwright/test";
 
 export const test = base.extend({
