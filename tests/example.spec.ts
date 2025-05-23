@@ -1,12 +1,10 @@
-import { expect } from '@playwright/test';
-import { copys } from "../data/aviancadata";
 import { test } from "../extends/extend-tests";
 import { GetContext } from '../global';
 
 test.describe('Comenzo prueba avianca', () => {
     test('prueba home avianca', async () => {
-        test.setTimeout(300_000);
-        
+        test.setTimeout(100_000);
+
         const context = await GetContext();
         const page = await context.newPage();
         await page.addInitScript(() => {

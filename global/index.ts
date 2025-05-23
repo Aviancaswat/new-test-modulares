@@ -2,8 +2,9 @@ import { chromium } from "playwright-extra";
 
 export const GetContext = async () => {
     const browser = await chromium.launch({
-        headless: true,
+        headless: false,
         args: [
+            '--disable-http2',
             '--disable-blink-features=AutomationControlled',
             '--enable-webgl',
             '--use-gl=swiftshader',

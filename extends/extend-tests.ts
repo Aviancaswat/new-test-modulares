@@ -351,7 +351,7 @@ export const test = base.extend({
             // Captura final de facturación
             await page.takeScreenshot('21-datos-facturacion');
         }
-
+        
         //#endregion
         await use(page);
     }
